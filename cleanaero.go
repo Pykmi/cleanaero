@@ -75,7 +75,7 @@ func Init() {
 
 	// Set parameters for the database namespace and set names
 	flag.StringVar(&ARG_DB_NAMESPACE, "ns", "test", "Namespace to access within the database.")
-	flag.StringVar(&ARG_DB_SETS, "sets", "", "Sets to wipe clean in the database.")
+	flag.StringVar(&ARG_DB_SETS, "sets", "", "Sets to wipe clean in the database. Separate multiple sets by colon.")
 
 	// Additional parameter for verbose program output
 	flag.BoolVar(&ARG_VERBOSE, "v", false, "Make program output verbose.")
