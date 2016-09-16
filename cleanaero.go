@@ -24,6 +24,8 @@ var ARG_VERBOSE bool
 var DBConn *db.Client
 
 func main() {
+	count := 0
+
 	// Initialize command-line arguments
 	Init()
 
@@ -51,8 +53,16 @@ func main() {
 	}
 
 	for i, _ := range sets {
-		clearTable(sets[i])
+		n, err := clearTable(sets[i])
+		if err != nil {
+			fmt.Fprintf(os.Stderr, err.Error())
+			continue
+		}
+
+		count = count + n
 	}
+
+	fmt.Printf("\nComplete... removed %v records", count)
 }
 
 /**
