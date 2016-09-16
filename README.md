@@ -1,5 +1,5 @@
 # Cleanaero
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+A small program to help clean aerospike server databases during testing. It is not meant for production or maintanance, but simply to remove old and unnecessary testing data that may be left over.
 
 ## Usage
 ```
@@ -15,12 +15,35 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ```
 
 ## Dependencies
-Requires the [aerospike client go](https://github.com/aerospike/aerospike-client-go) client library.
+Requires the [aerospike-client-go](https://github.com/aerospike/aerospike-client-go) client library.
 
 ### Installing aerospike-client-go
 Get the client in your `GOPATH`
 ```
 go get github.com/aerospike/aerospike-client-go
+```
+
+## Important
+The program relies on being able to query the database and receiving primary keys. Currently there is no other method to remove values from aerospike sets, and the server will only return primary keys if they were specifically sent to the server when the data was added. The exact implementation between different versions of the client library can vary. However, in the Go version this is done through the use of the [WritePolicy](https://godoc.org/github.com/aerospike/aerospike-client-go#WritePolicy) datatype, by setting `SendKey` to `True`.
+
+### Example
+```Go
+package main
+
+import (
+	db "github.com/aerospike/aerospike-client-go"
+)
+
+func test() {
+	policy := db.NewWritePolicy(0, 0)
+	policy.SendKey = true
+
+	key, _ := db.NewKey("test", "myset", "mykey")
+	bName := db.NewBin("Name", "Jordan")
+
+	err := DBConn.PutBins(policy, key, bName)
+	panicOnError(err)
+}
 ```
 
 ## TODO List
